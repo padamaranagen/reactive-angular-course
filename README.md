@@ -146,8 +146,30 @@ export class HomeComponent implements OnInit {
 ```
 
 Demo
+> https://stackblitz.com/edit/reactive-angular-with-rxjs-1-imperative-style-declaration
 
-https://stackblitz.com/edit/reactive-angular-with-rxjs-1-imperative-style-declaration
+## Understanding potential problems of a progaram written in Imperative Style
+
+> http://callbackhell.com/
+
+This type of callback hell is something that we want to avoid by using Obervable.
+
+The potentaial problem with this component is there is too much login in this component. It means, the component knows alot about where the data comes from the component know that .the data comes from backend. The component knows how to do HTTP call and how to process the data that it receives. 
+
+> Impeative data contais more duplicate data to avoid this duplication we use Observables.
+ 
+ ```typescript
+ 
+  beginnerCourses: Course[];
+
+  advancedCourses: Course[];
+ ```
+
+A bove code type called "**Immutable**" type declaration. Keeping data in these local mutable state variables is potentially problematic if we make a change to  these data here locally in the component. There is no way for the rest of the application to know that this data was modified the data.
+
+ Modifying the directly at the level of a component by **mutating** a member variable might introduce certain dependencies with other components of the applicataion making our program harder. 
+
+
 
 
 
