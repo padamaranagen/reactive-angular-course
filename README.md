@@ -169,6 +169,39 @@ A bove code type called "**Immutable**" type declaration. Keeping data in these 
 
  Modifying the directly at the level of a component by **mutating** a member variable might introduce certain dependencies with other components of the applicataion making our program harder. 
 
+## Stateless Observable-based service
+
+**Statelesss Observable Service**, which is the first design pattern we're going to cover.
+
+The service that we are about to write is going to be a stateless observable service  
+
+```typescript
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Course } from "../model/course";
+import { Observable } from "rxjs";
+import { map } from "rxjs/operators";
+
+@Injectable()
+export class CourseService {
+  constructor(private http: HttpClient) {}
+
+  loadAllCourses(): Observable<Course[]> {
+    return this.http
+      .get<Course[]>("/assets/courses.json")
+      .pipe(map(res => res["payload"]));
+  }
+}
+```
+ 
+> Observable<Course[]>, we are going back to return to the course array of observable.
+
+>get<Course[]>("/assets/courses.json"), get expect course[] type of data from the get call
+
+>map operator : RXjs operator are chainable functions that allow us to quickly combine different observable is in obtain to obtain different type of results.
+
+example: map(x => 10 * x), 
+let x is 1 return 10, 2 return 20, 3 return 30 and so on.
 
 
 
