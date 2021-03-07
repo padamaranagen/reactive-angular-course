@@ -204,6 +204,122 @@ example: map(x => 10 * x),
 let x is 1 return 10, 2 return 20, 3 return 30 and so on.
 
 
+## Consuming Observable-based services using Angular async Pipe
+
+```html
+<div class="courses-panel">
+  <h3>All Courses</h3>
+
+  <mat-tab-group>
+    <mat-tab label="Beginners">
+      <mat-card *ngFor="let course of (beginnerCourses$ | async)" class="course-card mat-elevation-z10">
+        <mat-card-header>
+          <mat-card-title>{{course.description}}</mat-card-title>
+        </mat-card-header>
+
+        <img mat-card-image [src]="course.iconUrl" />
+
+        <mat-card-content>
+          <p>{{course.longDescription}}</p>
+        </mat-card-content>
+
+        <mat-card-actions class="course-actions">
+          <button
+            mat-button
+            class="mat-raised-button mat-primary"
+            [routerLink]="['/courses', course.id]"
+          >
+            VIEW COURSE
+          </button>
+
+          <button
+            mat-button
+            class="mat-raised-button mat-accent"
+            (click)="editCourse(course)"
+          >
+            EDIT
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-tab>
+
+    <mat-tab label="Advanced">
+      <mat-card *ngFor="let course of (advancedCourses$ | async)" class="course-card mat-elevation-z10">
+        <mat-card-header>
+          <mat-card-title>{{course.description}}</mat-card-title>
+        </mat-card-header>
+
+        <img mat-card-image [src]="course.iconUrl" />
+
+        <mat-card-content>
+          <p>{{course.longDescription}}</p>
+        </mat-card-content>
+
+        <mat-card-actions class="course-actions">
+          <button
+            mat-button
+            class="mat-raised-button mat-primary"
+            [routerLink]="['/courses', course.id]"
+          >
+            VIEW COURSE
+          </button>
+
+          <button
+            mat-button
+            class="mat-raised-button mat-accent"
+            (click)="editCourse(course)"
+          >
+            EDIT
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+```
+
+> *ngFor="let course of (beginnerCourses$ | async)"
+
+Without async pipe we were not able to do complete reactive programming in angular. The Async pipe subscribe to the beginner courses observable and this could make the values emitted by the observable available here to our templates. The Async pipe will **not only subscribe to the observable and get its value available to the template** but also **when the component gets destroyed these async pipe**, will also **unsubscribe from the observable if it is not yet completed** or effort out. This way we will avoid any potential memory leaks in our component. The also means that in our home compoent we will never have to take care of and subscribing from these observable manually.
+
+
+```typescript
+  beginnerCourses$: Observable<Course[]>;
+
+  advancedCourses$: Observable<Course[]>;
+
+ const courses$ = this.courseService
+      .loadAllCourses()
+      .pipe(map(courses => courses.sort(sortCoursesBySeqNo)));
+
+    this.beginnerCourses$ = courses$.pipe(
+      map(courses => courses.filter(course => (course.category = "BEGINNER")))
+    );
+    this.advancedCourses$ = courses$.pipe(
+      map(courses => courses.filter(course => (course.category = "ADVANCED")))
+    );
+```
+
+## Avoid Angular duplicate HTTP requests with the RXjs shareReplay operator
+
+ Screenshot
+
+We have two HTTP requests here, why this is happening and how to avooid it.
+ If you see above home component code, We have created courses observable. This is built uinsg the loadAllCourses from the service (course.service.ts), which in turn uses the angular HTTP client in order to produce an angular HTTP observable that send back to the view. These types of observables are HTTP observables have a very specific behavior. 
+
+ In our template we have two Async pipe which we are using beginner and advance, because of this pipe it generate two HTTP call.
+
+ We can use resolve the issue by using a method in RXjs called 
+ ```typescript 
+  shareReplay() 
+ ```  
+ at service level.
+
+ > Screenshot after using
+
+
+
+
 
 
 
