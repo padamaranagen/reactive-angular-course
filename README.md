@@ -302,7 +302,7 @@ Without async pipe we were not able to do complete reactive programming in angul
 
 ## Avoid Angular duplicate HTTP requests with the RXjs shareReplay operator
 
- Screenshot
+[ Duplicate Requests]: (https://github.com/padamaranagen/reactive-angular-course/blob/main/Angular%20duplicate%20requeset.PNG)
 
 We have two HTTP requests here, why this is happening and how to avooid it.
  If you see above home component code, We have created courses observable. This is built uinsg the loadAllCourses from the service (course.service.ts), which in turn uses the angular HTTP client in order to produce an angular HTTP observable that send back to the view. These types of observables are HTTP observables have a very specific behavior. 
@@ -315,7 +315,8 @@ We have two HTTP requests here, why this is happening and how to avooid it.
  ```  
  at service level.
 
- > Screenshot after using
+[No Duplicate]:
+(https://github.com/padamaranagen/reactive-angular-course/blob/main/After-apply-sharereplay.PNG)
 
 
 
